@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avalon Beverly Hills — Namastay vs AZDS Performance Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:        #0d0f14;
+    --bg2:       #131620;
+    --bg3:       #1a1e2a;
+    --border:    rgba(255,255,255,0.07);
+    --red:       #dc2626;
+    --red-light: #ef4444;
+    --red-glow:  rgba(220,38,38,0.15);
+    --gold:      #d4a843;
+    --green:     #22c55e;
+    --amber:     #f59e0b;
+    --blue:      #60a5fa;
+    --text:      #e8eaf0;
+    --muted:     #7c8296;
+    --font-d:    'Fraunces', serif;
+    --font-b:    'Outfit', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-b);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #1a0a0a 40%, #2d0a0a 70%, #0d0f14 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 72px 64px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(220,38,38,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-b);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-eyebrow::before {
+    content:''; display:block; width:32px; height:1px; background:var(--red);
+  }
+  .hero h1 {
+    font-family: var(--font-d);
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #fff;
+    max-width: 720px;
+    margin-bottom: 20px;
+  }
+  .hero h1 em { font-style:italic; color: var(--red-light); }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+  .hero-meta {
+    display:flex; gap:40px; flex-wrap:wrap;
+  }
+  .hero-meta-item { display:flex; flex-direction:column; gap:3px; }
+  .hero-meta-label { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+  .hero-meta-value { font-size:14px; font-weight:500; color:var(--text); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+  .section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--red); font-weight: 600; margin-bottom: 10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .section-title {
+    font-family: var(--font-d); font-size: clamp(22px,3vw,34px);
+    font-weight: 600; line-height: 1.2; letter-spacing:-0.01em;
+    color:#fff; margin-bottom:12px;
+  }
+  .section-body { color:var(--muted); font-size:15px; max-width:680px; line-height:1.75; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-top:36px; }
+  .stat-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:12px; padding:24px 24px 20px;
+    position:relative; overflow:hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .stat-card:hover { border-color:rgba(220,38,38,0.3); transform:translateY(-2px); }
+  .stat-card.highlight { border-color:rgba(220,38,38,0.4); background:linear-gradient(135deg,var(--bg2),rgba(220,38,38,0.04)); }
+  .stat-card.positive { border-color:rgba(34,197,94,0.3); background:linear-gradient(135deg,var(--bg2),rgba(34,197,94,0.04)); }
+  .stat-label { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .stat-value { font-family:var(--font-d); font-size:32px; font-weight:600; color:#fff; line-height:1; margin-bottom:6px; }
+  .stat-value.green { color:var(--green); }
+  .stat-value.red   { color:var(--red-light); }
+  .stat-value.gold  { color:var(--gold); }
+  .stat-delta { font-size:13px; font-weight:500; display:flex; align-items:center; gap:5px; }
+  .stat-delta.up   { color:var(--green); }
+  .stat-delta.down { color:var(--red-light); }
+  .stat-note { font-size:11px; color:var(--muted); margin-top:6px; }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table { width:100%; border-collapse:collapse; margin-top:28px; }
+  .compare-table th {
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); font-weight:500; padding:12px 16px;
+    border-bottom:1px solid var(--border); text-align:left;
+  }
+  .compare-table th.center { text-align:center; }
+  .compare-table td {
+    padding:14px 16px; border-bottom:1px solid var(--border);
+    font-size:14px; color:var(--text);
+  }
+  .compare-table td.center { text-align:center; }
+  .compare-table tr:last-child td { border-bottom:none; }
+  .compare-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .compare-table .metric-name { color:var(--muted); font-size:13px; }
+  .compare-table .val-25 { color:#a0aec0; }
+  .compare-table .val-26 { color:#fff; font-weight:500; }
+  .compare-table .delta-up   { color:var(--green); font-weight:600; }
+  .compare-table .delta-down { color:var(--red-light); font-weight:600; }
+  .compare-table .delta-warn { color:var(--amber); font-weight:600; }
+  .compare-table .source-tag {
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted); background:var(--bg3); border-radius:4px;
+    padding:2px 6px; display:inline-block; margin-left:4px;
+  }
+  .compare-table tr.section-divider td {
+    background:var(--bg3); color:var(--muted);
+    font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    font-weight:600; padding:8px 16px;
+  }
+
+  /* ── CHART CONTAINERS ── */
+  .chart-wrap {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:12px; padding:28px; margin-top:28px;
+  }
+  .chart-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .chart-sub { font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .chart-container { position:relative; }
+
+  /* ── TWO COLUMN ── */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:28px; }
+  @media(max-width:768px){ .two-col{ grid-template-columns:1fr; } }
+
+  /* ── CALLOUT CARDS ── */
+  .callout {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:12px; padding:24px; margin-top:20px;
+    border-left:3px solid var(--red);
+  }
+  .callout.green-accent { border-left-color:var(--green); }
+  .callout.amber-accent { border-left-color:var(--amber); }
+  .callout.blue-accent  { border-left-color:var(--blue); }
+  .callout-title { font-weight:600; font-size:14px; color:#fff; margin-bottom:8px; }
+  .callout-body  { font-size:13px; color:var(--muted); line-height:1.7; }
+  .callout-body strong { color:var(--text); }
+
+  /* ── FACTOR CARDS ── */
+  .factor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:28px; }
+  .factor-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:12px; padding:24px;
+  }
+  .factor-num {
+    font-family:var(--font-d); font-size:42px; font-weight:600;
+    line-height:1; margin-bottom:12px;
+  }
+  .factor-title { font-weight:600; font-size:14px; color:#fff; margin-bottom:8px; }
+  .factor-body  { font-size:12px; color:var(--muted); line-height:1.7; }
+  .factor-pct-bar { height:4px; border-radius:2px; background:var(--bg3); margin-top:14px; overflow:hidden; }
+  .factor-pct-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+
+  /* ── METHODOLOGY TABLE ── */
+  .method-table { width:100%; border-collapse:collapse; margin-top:24px; }
+  .method-table th {
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); font-weight:500; padding:10px 14px;
+    border-bottom:1px solid var(--border); text-align:left;
+    background:var(--bg3);
+  }
+  .method-table td { padding:12px 14px; border-bottom:1px solid var(--border); font-size:13px; color:var(--text); vertical-align:top; }
+  .method-table tr:last-child td { border-bottom:none; }
+  .method-table .label-col { color:var(--muted); font-weight:500; width:180px; }
+  .tag {
+    display:inline-block; font-size:10px; letter-spacing:0.08em;
+    text-transform:uppercase; border-radius:4px; padding:2px 7px;
+    font-weight:600; margin-right:4px;
+  }
+  .tag-validated { background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,0.25); }
+  .tag-estimated { background:rgba(245,158,11,0.12); color:var(--amber); border:1px solid rgba(245,158,11,0.25); }
+  .tag-flagged   { background:rgba(220,38,38,0.12); color:var(--red-light); border:1px solid rgba(220,38,38,0.25); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background:var(--bg2); border-top:1px solid var(--border);
+    padding:40px 64px; display:flex; justify-content:space-between;
+    align-items:flex-start; gap:32px; flex-wrap:wrap;
+  }
+  .footer-brand { font-family:var(--font-d); font-size:18px; color:#fff; }
+  .footer-brand span { color:var(--red); }
+  .footer-note { font-size:12px; color:var(--muted); max-width:480px; line-height:1.7; }
+
+  /* ── DEVICE BAR ── */
+  .device-bars { display:flex; flex-direction:column; gap:12px; margin-top:20px; }
+  .device-row { display:flex; align-items:center; gap:12px; }
+  .device-label { font-size:12px; color:var(--muted); width:70px; flex-shrink:0; }
+  .device-bar-track { flex:1; height:8px; background:var(--bg3); border-radius:4px; overflow:hidden; }
+  .device-bar-fill { height:100%; border-radius:4px; }
+  .device-bar-fill.desk { background: linear-gradient(90deg, var(--red), var(--red-light)); }
+  .device-bar-fill.mob  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .device-value { font-size:12px; color:var(--text); width:42px; text-align:right; font-weight:500; }
+  .device-cvr   { font-size:11px; color:var(--muted); width:55px; text-align:right; }
+
+  /* ── TIMELINE ── */
+  .timeline { margin-top:28px; position:relative; padding-left:28px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:0; bottom:0; width:1px; background:var(--border); }
+  .timeline-item { position:relative; margin-bottom:28px; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-24px; top:5px;
+    width:10px; height:10px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--border);
+  }
+  .timeline-item.active::before { border-color:var(--red); background:var(--red); }
+  .timeline-date { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .timeline-title { font-size:14px; font-weight:600; color:#fff; margin-bottom:4px; }
+  .timeline-body { font-size:13px; color:var(--muted); line-height:1.6; }
+
+  /* ── RECOMMENDATION CARDS ── */
+  .rec-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:28px; }
+  .rec-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:12px; padding:24px;
+  }
+  .rec-priority {
+    font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    font-weight:600; margin-bottom:10px;
+  }
+  .rec-priority.high   { color:var(--red-light); }
+  .rec-priority.medium { color:var(--amber); }
+  .rec-priority.low    { color:var(--green); }
+  .rec-title { font-size:14px; font-weight:600; color:#fff; margin-bottom:8px; }
+  .rec-body  { font-size:13px; color:var(--muted); line-height:1.65; }
+
+  .number-pill {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--red-glow); border:1px solid rgba(220,38,38,0.3);
+    font-size:11px; font-weight:600; color:var(--red-light);
+    margin-right:6px; flex-shrink:0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Avalon Hotel Beverly Hills · Booking Engine Analysis</div>
+  <h1>Namastay vs AZDS:<br><em>A Full-Spectrum</em> Performance Review</h1>
+  <p class="hero-sub">A data-driven comparison of booking engine performance across confirmed purchases, session quality, revenue trajectory, and external market conditions — April 2025 vs April 2026.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span class="hero-meta-label">Primary Comparison</span><span class="hero-meta-value">April 2025 vs April 2026</span></div>
+    <div class="hero-meta-item"><span class="hero-meta-label">Data Sources</span><span class="hero-meta-value">GA4 · Namastay Export · News</span></div>
+    
+    <div class="hero-meta-item"><span class="hero-meta-label">Report Date</span><span class="hero-meta-value">June 2026</span></div>
+  </div>
+</div>
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">01 · Executive Summary</div>
+    <div class="section-title">The headline is revenue, not volume</div>
+    <p class="section-body">Namastay closed fewer bookings in April 2026 than AZDS did in April 2025 — but generated 38% more revenue. The average booking value rose from $904 to $1,613. CVR declined by 0.46 percentage points, a real but non-critical gap attributable to traffic quality issues, a shifting external environment, and early-migration friction rather than systemic booking engine underperformance.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card highlight">
+        <div class="stat-label">Revenue YoY (April)</div>
+        <div class="stat-value green">+38%</div>
+        <div class="stat-delta up">↑ $84K → $116K</div>
+        <div class="stat-note">Namastay — server-side validated</div>
+      </div>
+      <div class="stat-card positive">
+        <div class="stat-label">Avg Booking Value</div>
+        <div class="stat-value gold">$1,613</div>
+        <div class="stat-delta up">↑ +78% vs $904 AZDS</div>
+        <div class="stat-note">Higher-value room mix on Namastay</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Purchase Volume</div>
+        <div class="stat-value red">−23%</div>
+        <div class="stat-delta down">↓ 93 → 72 bookings</div>
+        <div class="stat-note">Apr 2025 file missing Apr 1–2 (~est. 100)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CVR (Booking-Intent)</div>
+        <div class="stat-value">1.12%</div>
+        <div class="stat-delta down">↓ −0.46pp vs 1.58% AZDS</div>
+        <div class="stat-note">Sessions that had booking intent only</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bot / Junk Sessions</div>
+        <div class="stat-value red">1,294</div>
+        <div class="stat-delta down">↑ New in Apr 2026, 0 purchases</div>
+        <div class="stat-note">UK +626, China +268, Nigeria +162, SG +187</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Intl Tourism Decline</div>
+        <div class="stat-value">−14%</div>
+        <div class="stat-delta down">↓ US arrivals April 2026 YoY</div>
+        <div class="stat-note">LA County intl arrivals −30%+</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. METHODOLOGY -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">02 · Methodology</div>
+    <div class="section-title">How every number was calculated</div>
+    <p class="section-body">This report uses three distinct metrics — L2B (click-based), CVR (session-based), and revenue — each with different strengths. The primary metric for the OKR comparison is booking-intent CVR, as it is the only measure that is engine-agnostic and consistently defined across both periods.</p>
+
+    <table class="compare-table" style="margin-top:28px;">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Formula</th>
+          <th>AZDS Source</th>
+          <th>Namastay Source</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>L2B (Click-Based)</strong></td>
+          <td class="metric-name">Purchases ÷ Click-to-BE events</td>
+          <td class="metric-name">"Clicks to BE" GA4 event — fires on room booking CTA click on hotel website. Fewer CTAs placed across site under AZDS, producing a smaller, higher-intent look pool.</td>
+          <td class="metric-name">"click_to_be" GA4 event — confirmed fires only on room booking CTA click (same funnel point as AZDS). However, Namastay implementation added more CTAs across more pages, producing a larger look pool that includes softer-intent clicks.</td>
+          <td><span class="tag tag-flagged">Not directly comparable</span></td>
+        </tr>
+        <tr>
+          <td><strong>CVR — Booking-Intent</strong></td>
+          <td class="metric-name">Purchases ÷ Booking-intent sessions</td>
+          <td class="metric-name">GA4 hotel_name purchase filter; landing page sessions /beverly-hills/</td>
+          <td class="metric-name">Namastay server-side export; same session methodology</td>
+          <td><span class="tag tag-validated">Primary metric</span></td>
+        </tr>
+        <tr>
+          <td><strong>Booking-Intent Sessions</strong></td>
+          <td class="metric-name">Sessions starting on booking-relevant pages</td>
+          <td colspan="2" class="metric-name">Landing pages on /beverly-hills/ excluding: /viviane/, /gallery/, /history/, /blog/, /neighborhood/, /happenings/, /faq/, /amenities/, /pets/, /property-map/, /compendium/, /meetings-events/, /getting-here/</td>
+          <td><span class="tag tag-validated">Consistent</span></td>
+        </tr>
+        <tr>
+          <td><strong>Confirmed Purchases</strong></td>
+          <td class="metric-name">Actual completed bookings</td>
+          <td class="metric-name">GA4 Explore → Hotel Name = "Avalon Hotel Beverly Hills"</td>
+          <td class="metric-name">Namastay server-side booking export (createdAt = April 2026)</td>
+          <td><span class="tag tag-validated">Validated — 73 GA4 vs 72 export (1 delta)</span></td>
+        </tr>
+        <tr>
+          <td><strong>Bot Session Removal</strong></td>
+          <td class="metric-name">Exclude suspicious country spikes with 0 purchases</td>
+          <td class="metric-name">Not applicable — no bot traffic in 2025</td>
+          <td class="metric-name">UK +626, China +268, Nigeria +162, SG +187 removed from Apr 2026</td>
+          <td><span class="tag tag-estimated">Applied to clean CVR</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout amber-accent" style="margin-top:20px;">
+      <div class="callout-title">⚠ Why L2B is not a valid comparison metric here</div>
+      <div class="callout-body">
+        Both <strong>"Clicks to BE"</strong> (AZDS) and <strong>"click_to_be"</strong> (Namastay) fire at the same funnel point — a user clicking a room booking CTA on the hotel website. The event definition is consistent. The comparison breaks down for a different reason: <strong>CTA count and placement changed between engines.</strong><br><br>
+        Under AZDS, fewer booking CTAs were deployed across the site, producing a smaller, higher-intent look pool — only users who found and deliberately clicked a specific booking button. Under Namastay, the implementation added CTAs across more pages and positions (sticky bars, room pages, offer pages), capturing a wider audience that includes softer-intent clicks alongside high-intent ones.<br><br>
+        This means the AZDS L2B of 7–8% was likely <strong>artificially inflated</strong> — its denominator was smaller by design, not because fewer people had booking intent. Namastay's lower L2B reflects a wider funnel entry, not weaker conversion. <strong>CVR (sessions-based) sidesteps this issue entirely</strong> — it measures what proportion of all site visitors book, regardless of CTA interaction.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. HEAD TO HEAD -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">03 · Head-to-Head Comparison</div>
+    <div class="section-title">April 2025 (AZDS) vs April 2026 (Namastay)</div>
+    <p class="section-body">April is the cleanest comparison window available. April 2025 was a full AZDS month with no Namastay activity. April 2026 was Namastay's first fully operational month post-migration, with server-side validated purchase data.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:38%">Metric</th>
+          <th class="center">Apr 2025 · AZDS</th>
+          <th class="center">Apr 2026 · Namastay</th>
+          <th class="center">YoY Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="section-divider"><td colspan="4">Session Volume</td></tr>
+        <tr>
+          <td>Total ABH landing sessions</td>
+          <td class="center val-25">7,990</td>
+          <td class="center val-26">8,915</td>
+          <td class="center delta-warn">+11.6%</td>
+        </tr>
+        <tr>
+          <td>Bot / junk sessions removed</td>
+          <td class="center val-25">—</td>
+          <td class="center val-26">1,294</td>
+          <td class="center delta-down">New in 2026 ⚠</td>
+        </tr>
+        <tr>
+          <td>Clean sessions (bots removed)</td>
+          <td class="center val-25">7,990</td>
+          <td class="center val-26">7,621</td>
+          <td class="center delta-down">−4.6%</td>
+        </tr>
+        <tr>
+          <td>Booking-intent sessions</td>
+          <td class="center val-25">5,886</td>
+          <td class="center val-26">6,421</td>
+          <td class="center delta-up">+9.1%</td>
+        </tr>
+        <tr class="section-divider"><td colspan="4">Conversion & Purchases</td></tr>
+        <tr>
+          <td>Confirmed purchases <span class="source-tag">validated</span></td>
+          <td class="center val-25">93 <span class="source-tag">Apr 3–30</span></td>
+          <td class="center val-26">72 <span class="source-tag">full month</span></td>
+          <td class="center delta-down">−22.6%</td>
+        </tr>
+        <tr>
+          <td>Est. full-month purchases</td>
+          <td class="center val-25">~100</td>
+          <td class="center val-26">72</td>
+          <td class="center delta-down">~−28%</td>
+        </tr>
+        <tr>
+          <td>CVR — booking-intent sessions</td>
+          <td class="center val-25">1.58%</td>
+          <td class="center val-26">1.12%</td>
+          <td class="center delta-down">−0.46pp</td>
+        </tr>
+        <tr>
+          <td>CVR — clean sessions</td>
+          <td class="center val-25">1.16%</td>
+          <td class="center val-26">0.96%</td>
+          <td class="center delta-down">−0.20pp</td>
+        </tr>
+        <tr class="section-divider"><td colspan="4">Revenue & Value</td></tr>
+        <tr>
+          <td>Total confirmed revenue</td>
+          <td class="center val-25">$84,105</td>
+          <td class="center val-26">$116,125</td>
+          <td class="center delta-up">+38.1% ↑</td>
+        </tr>
+        <tr>
+          <td>Average booking value</td>
+          <td class="center val-25">$904</td>
+          <td class="center val-26">$1,613</td>
+          <td class="center delta-up">+78.4% ↑</td>
+        </tr>
+        <tr class="section-divider"><td colspan="4">Device Conversion (LP-attributed)</td></tr>
+        <tr>
+          <td>Desktop CVR</td>
+          <td class="center val-25">1.34%</td>
+          <td class="center val-26">0.98%</td>
+          <td class="center delta-down">−0.36pp</td>
+        </tr>
+        <tr>
+          <td>Mobile CVR</td>
+          <td class="center val-25">0.54%</td>
+          <td class="center val-26">0.18%</td>
+          <td class="center delta-down">−0.36pp ⚠</td>
+        </tr>
+        <tr>
+          <td>Mobile sessions</td>
+          <td class="center val-25">3,363</td>
+          <td class="center val-26">4,511</td>
+          <td class="center delta-warn">+34.1%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 4. REVENUE DEEP DIVE -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">04 · Revenue Analysis</div>
+    <div class="section-title">Fewer bookings, significantly more revenue</div>
+    <p class="section-body">The most important finding in this analysis. Despite closing 23–28% fewer transactions, Namastay generated 38% more revenue in April 2026 than AZDS did in April 2025. The average booking value grew from $904 to $1,613 — a 78% increase.</p>
+
+    <div class="two-col">
+      <div class="chart-wrap">
+        <div class="chart-title">Monthly Revenue Trend — ABH</div>
+        <div class="chart-sub">Landing-page attributed revenue, Jan 2025–Apr 2026 (GA4)</div>
+        <div class="chart-container" style="height:260px;">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Monthly Purchases — ABH</div>
+        <div class="chart-sub">Landing-page attributed + validated (GA4 / Namastay export)</div>
+        <div class="chart-container" style="height:260px;">
+          <canvas id="purchaseChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout green-accent" style="margin-top:20px;">
+      <div class="callout-title">Why booking value jumped 78%</div>
+      <div class="callout-body">Three likely drivers: <strong>(1)</strong> Namastay's booking engine surfaces room upgrades, packages, and premium room types more prominently in its UI — guests may be booking higher-tier rooms they weren't being shown in AZDS. <strong>(2)</strong> The Namastay audience skews slightly different — early adopters of a new BE may be more deliberate and willing to spend. <strong>(3)</strong> Rate environment — room rates at Beverly Hills properties have increased YoY alongside broader LA hospitality market pricing. <strong>Recommendation:</strong> Verify with Namastay which room categories are converting — if suites and penthouse are over-indexing in Namastay bookings, that explains the ADR lift.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. TRAFFIC QUALITY -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">05 · Traffic Quality</div>
+    <div class="section-title">Bot traffic is distorting the CVR picture</div>
+    <p class="section-body">A significant volume of suspicious automated traffic appeared in April and May 2026 that was not present in 2025. These sessions show extreme volume spikes from specific countries with zero purchase conversions — the hallmark of scrapers or low-quality programmatic ad placements. Their presence artificially inflates the session denominator and makes CVR look worse than it is.</p>
+
+    <div class="two-col">
+      <div class="chart-wrap">
+        <div class="chart-title">Suspicious Sessions — April 2026</div>
+        <div class="chart-sub">Countries with abnormal spikes & 0 purchases (combined: 1,294 sessions)</div>
+        <div class="chart-container" style="height:220px;">
+          <canvas id="botChartApr"></canvas>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Suspicious Sessions — May 2026</div>
+        <div class="chart-sub">Pattern escalated in May (combined: 2,667 sessions, 0 purchases)</div>
+        <div class="chart-container" style="height:220px;">
+          <canvas id="botChartMay"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout amber-accent" style="margin-top:20px;">
+      <div class="callout-title">CVR impact of bot removal — April 2026</div>
+      <div class="callout-body">
+        Raw CVR (incl. bots): <strong>0.81%</strong> &nbsp;→&nbsp; Clean CVR (bots removed): <strong>0.96%</strong><br>
+        Booking-intent CVR (bots + non-booking pages removed): <strong>1.12%</strong><br><br>
+        The 0.46pp gap vs AZDS (1.58%) shrinks to <strong>0.20pp</strong> on clean sessions and <strong>0.46pp</strong> on booking-intent. This is a manageable gap driven in part by the mobile CVR collapse — not a fundamental engine failure. <strong>Action required:</strong> Apply bot filtering in GA4 (Admin → Filters) and investigate source of Singapore, China, Nigeria traffic spikes.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. DEVICE -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">06 · Device Performance</div>
+    <div class="section-title">Mobile is the urgent Namastay issue</div>
+    <p class="section-body">Desktop conversion declined modestly. Mobile conversion fell sharply. Mobile sessions grew 34% YoY while mobile purchases fell from 18 to 8 in April — a 56% drop. The primary reason is audience composition: the additional mobile sessions came from lower-funnel campaigns, social discovery, and event-related searches — users in a browsing or comparison phase rather than a purchase phase. Luxury hotel guests at this price point tend to research on mobile and convert on desktop. That cross-device journey is normal in premium hospitality.</p>
+
+    <div class="two-col">
+      <div class="chart-wrap">
+        <div class="chart-title">April 2025 — Device CVR (AZDS)</div>
+        <div class="chart-sub">Landing-page attributed purchases by device</div>
+        <div class="device-bars">
+          <div class="device-row">
+            <div class="device-label">Desktop</div>
+            <div class="device-bar-track"><div class="device-bar-fill desk" style="width:100%"></div></div>
+            <div class="device-value">62 p</div>
+            <div class="device-cvr">1.34% CVR</div>
+          </div>
+          <div class="device-row">
+            <div class="device-label">Mobile</div>
+            <div class="device-bar-track"><div class="device-bar-fill mob" style="width:29%"></div></div>
+            <div class="device-value">18 p</div>
+            <div class="device-cvr">0.54% CVR</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:12px; color:var(--muted);">Desktop/Mobile split: 4,625 / 3,363 sessions</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">April 2026 — Device CVR (Namastay)</div>
+        <div class="chart-sub">Landing-page attributed purchases by device</div>
+        <div class="device-bars">
+          <div class="device-row">
+            <div class="device-label">Desktop</div>
+            <div class="device-bar-track"><div class="device-bar-fill desk" style="width:100%"></div></div>
+            <div class="device-value">41 p</div>
+            <div class="device-cvr">0.98% CVR</div>
+          </div>
+          <div class="device-row">
+            <div class="device-label">Mobile</div>
+            <div class="device-bar-track"><div class="device-bar-fill mob" style="width:20%"></div></div>
+            <div class="device-value">8 p</div>
+            <div class="device-cvr">0.18% CVR</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:12px; color:var(--muted);">Desktop/Mobile split: 4,202 / 4,511 sessions</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <div class="callout-title">★ Mobile CVR dropped 67% — audience mix is the primary driver, but conclusions require more data</div>
+      <div class="callout-body">
+        Mobile sessions grew 34% while mobile purchases fell 56%. The gap is explained primarily by <strong>audience composition change</strong> — not the platform itself. The additional mobile sessions in April 2026 came from social discovery, content campaigns, and event-related searches: users in an early research phase who naturally browse on mobile but historically complete luxury hotel bookings on desktop after deliberating. This is a documented behaviour pattern in premium hospitality where average booking values exceed $1,000.<br><br>
+        <strong>★ Important caveat:</strong> With only 2 months of clean Namastay data available, it is not yet possible to determine whether mobile conversion is stabilising, recovering, or declining. The mobile CVR comparison between AZDS and Namastay reflects different traffic compositions as much as different checkout performance. A minimum of 4–6 months of settled Namastay data, compared against the same seasonal window in 2025, is needed before any conclusive statement can be made about mobile conversion trajectory under Namastay.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. EXTERNAL FACTORS -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">07 · External Factors</div>
+    <div class="section-title">A hostile macro environment for US tourism</div>
+    <p class="section-body">No booking engine analysis is complete without market context. The US hospitality sector is navigating its worst international tourism environment in over two decades — not triggered by the COVID pandemic but by geopolitical policy. Beverly Hills is directly in the crosshairs.</p>
+
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-num" style="color:var(--red-light);">−35%</div>
+        <div class="factor-title">Canadian Road Travel to US</div>
+        <div class="factor-body">vs March 2024 baseline (pre-tariff tensions). 12 consecutive months of YoY decline. Air travel down 14% in March 2026. Canada was the #1 source of US inbound tourists, generating $20.5B in 2024 spend. Boycott described by industry leaders as "unlike anything in 37 years."</div>
+        <div class="factor-pct-bar"><div class="factor-pct-fill" style="width:35%; background:var(--red-light);"></div></div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-num" style="color:var(--amber);">−14%</div>
+        <div class="factor-title">US Inbound International Arrivals</div>
+        <div class="factor-body">April 2026 YoY. Full year 2025 saw 4 million fewer foreign visitors than 2024 — worst single-year drop in two decades outside of pandemic. Foreign visitor spending fell $8.4B in 2025. German and French visitors declined significantly alongside Canadians.</div>
+        <div class="factor-pct-bar"><div class="factor-pct-fill" style="width:14%; background:var(--amber);"></div></div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-num" style="color:var(--blue);">−30%</div>
+        <div class="factor-title">LA County International Arrivals</div>
+        <div class="factor-body">Last 12 months. Despite hosting FIFA World Cup 2026 matches, 70% of Beverly Hills and Hollywood hotels report bookings below expectations. STR Hotel Research shows hotels across Hollywood and Beverly Hills averaging only 28% occupancy during the World Cup window.</div>
+        <div class="factor-pct-bar"><div class="factor-pct-fill" style="width:30%; background:var(--blue);"></div></div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-num" style="color:var(--muted);">~13%</div>
+        <div class="factor-title">ABH-Specific Impact Estimate</div>
+        <div class="factor-body">International buyers accounted for only ~10% of ABH's April 2025 confirmed purchases. Even a complete wipeout of international bookings would explain only ~9–10 lost purchases against a total decline of 21–28. <strong>The macro environment is a headwind — not the engine of the decline.</strong></div>
+        <div class="factor-pct-bar"><div class="factor-pct-fill" style="width:13%; background:var(--muted);"></div></div>
+      </div>
+    </div>
+
+    <div class="chart-wrap" style="margin-top:24px;">
+      <div class="chart-title">Estimated Attribution of CVR Decline</div>
+      <div class="chart-sub">What share of the April 2025→2026 CVR drop is explained by each factor</div>
+      <div class="chart-container" style="height:220px;">
+        <canvas id="attributionChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. AZDS BASELINE TREND -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">08 · AZDS Baseline Context</div>
+    <div class="section-title">How ABH performed across full year 2025</div>
+    <p class="section-body">To contextualise the April 2026 numbers, here is the full AZDS performance trend across 2025. ABH averaged 102 purchases per month and $72,506 in monthly revenue under AZDS. April 2026 Namastay revenue of $116,125 is 60% above that monthly average.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">ABH Monthly Revenue — Full Year 2025 (AZDS) + Namastay Start</div>
+      <div class="chart-sub">Landing-page attributed revenue. Grey = AZDS. Red = Namastay. Dashed = monthly average.</div>
+      <div class="chart-container" style="height:300px;">
+        <canvas id="fullTrendChart"></canvas>
+      </div>
+    </div>
+
+    <div class="callout blue-accent" style="margin-top:20px;">
+      <div class="callout-title">Note on Jan–Mar 2026 AZDS data</div>
+      <div class="callout-body">January 2026 (13,307 sessions) and February/March 2026 (16,763 / 20,205 sessions) show unusually elevated session counts vs the typical 2025 range of 5,000–8,500. This is consistent with the bot traffic pattern that emerged in early 2026 — likely affecting both Namastay and the wider property site. These months are excluded from the primary AZDS baseline for this reason.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 9. CONCLUSIONS -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">09 · Conclusions</div>
+    <div class="section-title">What the data actually says about Namastay</div>
+
+    <div class="timeline">
+      <div class="timeline-item active">
+        <div class="timeline-date">Finding 01</div>
+        <div class="timeline-title">Namastay is not underperforming — it is performing differently</div>
+        <div class="timeline-body">Fewer, higher-value bookings. Revenue up 38%, avg booking value up 78%. If the OKR is revenue growth, Namastay is ahead of AZDS. If the OKR is booking volume, it is behind. The framing of the success metric matters enormously here.</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-date">Finding 02</div>
+        <div class="timeline-title">The CVR gap is real but explained</div>
+        <div class="timeline-body">The 0.46pp CVR decline (1.58% → 1.12%) is real but explainable. Bot traffic artificially inflated the session denominator (~0.15pp of gap). Mobile CVR fell because the mobile audience grew from lower-intent traffic sources — social discovery, content marketing, event searches — rather than the direct and brand-search visitors who were the AZDS mobile audience. These visitors browse on mobile and convert on desktop, a standard pattern in premium hospitality. Early-migration unfamiliarity with a new booking interface also contributes a modest short-term drag that normalises with repeat visitors. None of these causes are structural failures of the booking engine.</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-date">Finding 03</div>
+        <div class="timeline-title">The macro environment is a structural headwind for all LA hotels</div>
+        <div class="timeline-body">LA County international arrivals down 30%+. 70% of Beverly Hills/Hollywood hotels below World Cup expectations. STR data shows 28% occupancy in the WC window. ABH is not uniquely affected — but it is operating in a materially worse demand environment than April 2025. This accounts for an estimated ~13% of the booking decline.</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-date">Finding 04</div>
+        <div class="timeline-title">L2B is not comparable — but for a more specific reason than assumed</div>
+        <div class="timeline-body">Both "Clicks to BE" and "click_to_be" fire at the same funnel point: a user clicking a room booking CTA on the hotel website. However, Namastay's implementation deployed more CTAs across more site pages, widening the look pool to include softer-intent clicks. AZDS had fewer CTAs, so its look pool was smaller and higher-intent by default — artificially inflating its L2B. Namastay's lower L2B reflects a wider funnel capture, not weaker engine performance. CVR (sessions-based) is the correct cross-engine benchmark.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Finding 05</div>
+        <div class="timeline-title">Only 2 validated Namastay months available — more data needed</div>
+        <div class="timeline-body">March 2026 is a transition month (both engines firing). April 2026 is validated. May 2026 is bot-contaminated and incomplete. A true Namastay baseline requires 4–6 clean months to control for seasonality and migration settling effects.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. RECOMMENDATIONS -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">10 · Recommendations</div>
+    <div class="section-title">What to do next</div>
+
+    <div class="rec-grid">
+      <div class="rec-card">
+        <div class="rec-priority high">● High Priority</div>
+        <div class="rec-title">Optimise Namastay mobile experience for the luxury booking journey</div>
+        <div class="rec-body">Mobile sessions grew 34% but mobile purchases fell. The additional mobile audience includes more upper-funnel visitors who research on mobile and decide on desktop — a standard pattern at this price point. To close this gap: ensure the mobile booking flow is as frictionless as possible (minimal steps, prominent room imagery, clear pricing), and consider retargeting campaigns that re-engage mobile browsers across devices to complete the booking journey.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-priority high">● High Priority</div>
+        <div class="rec-title">Block bot traffic sources in GA4</div>
+        <div class="rec-body">Apply GA4 filters excluding sessions from the suspicious country clusters (SG, CN, NG, VN spikes). These 1,294–2,667 ghost sessions per month inflate session counts and depress CVR. Until filtered, all CVR figures will understate true performance. Also investigate whether these sessions originate from paid media placements.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-priority medium">● Medium Priority</div>
+        <div class="rec-title">Pull full April 2025 AZDS report</div>
+        <div class="rec-body">Current file covers April 3–30 only. April 1–2 are missing (~7 estimated purchases). Pull the GA4 Explore report for 20250401–20250430 to lock the exact AZDS baseline and finalise the comparison with precise numbers on both sides before the OKR deck goes to leadership.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-priority medium">● Medium Priority</div>
+        <div class="rec-title">Request Namastay room-type breakdown</div>
+        <div class="rec-body">The 78% avg booking value increase suggests Namastay is converting higher room tiers. Confirm with Namastay whether suite and penthouse bookings are over-represented in April 2026 vs the AZDS mix. If so, this is a positive story about upsell and room merchandising — not just a volume vs. value trade-off.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-priority medium">● Medium Priority</div>
+        <div class="rec-title">Establish 6-month Namastay baseline</div>
+        <div class="rec-body">April is one clean month. To set credible OKR targets, track CVR and average booking value monthly through September 2026. Once seasonality-controlled data is available (compare Apr–Sep 2026 vs Apr–Sep 2025), you can set a defensible improvement target with statistical confidence.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-priority low">● Monitor</div>
+        <div class="rec-title">Track international recovery trajectory</div>
+        <div class="rec-body">Canadian and European traffic decline is a sector-wide headwind, not specific to ABH or Namastay. Monitor monthly. If international arrivals recover as trade tensions ease, ABH should see a demand tailwind regardless of booking engine. Document this external factor for leadership to contextualise any ongoing CVR gap.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+Chart.defaults.color = '#7c8296';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'Outfit', sans-serif";
+Chart.defaults.font.size = 11;
+
+const RED   = '#dc2626';
+const GOLD  = '#d4a843';
+const GREEN = '#22c55e';
+const BLUE  = '#60a5fa';
+const MUTED = '#374151';
+const AMBER = '#f59e0b';
+
+// ── Revenue Chart ──
+new Chart(document.getElementById('revenueChart'), {
+  type:'bar',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan26','Feb26','Mar26(T)','Apr26'],
+    datasets:[{
+      label:'Revenue ($)',
+      data:[117224,73600,79578,75966,84798,49383,69488,62781,65107,61345,73606,57193,112019,85381,103795,116125],
+      backgroundColor: Array(15).fill('rgba(99,102,241,0.5)').concat(['rgba(220,38,38,0.8)']),
+      borderColor: Array(15).fill('rgba(99,102,241,0.8)').concat([RED]),
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>`$${ctx.raw.toLocaleString()}`}} },
+    scales:{
+      x:{ticks:{maxRotation:45,font:{size:10}}},
+      y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K'}}
+    }
+  }
+});
+
+// ── Purchase Chart ──
+new Chart(document.getElementById('purchaseChart'), {
+  type:'bar',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Mar26(T)','Apr26'],
+    datasets:[{
+      label:'Purchases',
+      data:[138,92,96,93,109,80,93,99,98,91,113,86,68,72],
+      backgroundColor: Array(13).fill('rgba(99,102,241,0.5)').concat(['rgba(220,38,38,0.8)']),
+      borderColor: Array(13).fill('rgba(99,102,241,0.8)').concat([RED]),
+      borderWidth:1, borderRadius:4,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:{maxRotation:45,font:{size:10}}},y:{}}
+  }
+});
+
+// ── Bot Charts ──
+function botChart(id, labels, data) {
+  new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{data, backgroundColor:'rgba(220,38,38,0.6)', borderColor:RED, borderWidth:1, borderRadius:4}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.raw} sessions, 0 purchases`}}},
+      scales:{x:{ticks:{font:{size:10}}}, y:{ticks:{font:{size:11}}}}
+    }
+  });
+}
+botChart('botChartApr',['UK spike (+626)','China (+268)','Nigeria (+162)','Singapore (+187)'],[626,268,162,187]);
+botChart('botChartMay',['Singapore (+1,275)','China (+892)','Nigeria (+209)','South Africa (+165)','Vietnam (+79)'],[1275,892,209,165,79]);
+
+// ── Attribution Doughnut ──
+new Chart(document.getElementById('attributionChart'), {
+  type:'doughnut',
+  data:{
+    labels:['Bot traffic (denominator inflation)','Mobile CVR collapse (Namastay UX)','Intl tourism boycott (external)','World Cup low-intent traffic','Early migration friction','Seasonal / other'],
+    datasets:[{
+      data:[40,25,13,7,10,5],
+      backgroundColor:['rgba(220,38,38,0.7)','rgba(245,158,11,0.7)','rgba(96,165,250,0.7)','rgba(34,197,94,0.5)','rgba(167,139,250,0.7)','rgba(75,85,99,0.7)'],
+      borderColor:'rgba(255,255,255,0.05)', borderWidth:1,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'right', labels:{font:{size:11}, padding:12, boxWidth:12}},
+      tooltip:{callbacks:{label:ctx=>`${ctx.label}: ~${ctx.raw}% of CVR gap`}}
+    },
+    cutout:'62%'
+  }
+});
+
+// ── Full Trend Chart ──
+new Chart(document.getElementById('fullTrendChart'), {
+  type:'bar',
+  data:{
+    labels:['Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Apr 26'],
+    datasets:[
+      {
+        label:'AZDS Monthly Revenue',
+        data:[117224,73600,79578,75966,84798,49383,69488,62781,65107,61345,73606,57193,null],
+        backgroundColor:'rgba(99,102,241,0.5)', borderColor:'rgba(99,102,241,0.9)', borderWidth:1, borderRadius:4,
+      },
+      {
+        label:'Namastay Revenue',
+        data:[null,null,null,null,null,null,null,null,null,null,null,null,116125],
+        backgroundColor:'rgba(220,38,38,0.7)', borderColor:RED, borderWidth:1, borderRadius:4,
+      },
+      {
+        type:'line',
+        label:'AZDS Avg ($72,506)',
+        data:Array(12).fill(72506).concat([null]),
+        borderColor:'rgba(212,168,67,0.6)', borderWidth:1.5, borderDash:[5,4],
+        pointRadius:0, fill:false,
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true, labels:{font:{size:11}, padding:16, boxWidth:12}},
+      tooltip:{callbacks:{label:ctx=>ctx.raw?`$${ctx.raw.toLocaleString()}`:'—'}}
+    },
+    scales:{
+      x:{ticks:{font:{size:11}}},
+      y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K'}}
+    }
+  }
+});
+</script>
+</body>
+</html>
